@@ -108,6 +108,7 @@ This decides who can see student phone numbers.
 | Change fees, batch dates, syllabus | Workshop & programs → program → **Edit** |
 | Change date, time, venue | Workshop & programs → Workshop details → **Save** |
 | Add a student success story | Testimonials → **Add testimonial** |
+| Change the course catalogue | Workshop & programs → **Course catalogue link** (paste a Google Drive link to your PDF) → **Save** |
 
 **Success stories rule:** a story is only shown to students after you tick *"student gave written permission"*. If it shows a salary package, you must also tick *"I checked the offer letter"*. Until at least one story is visible, students simply don't see the Success stories tab.
 
@@ -119,7 +120,7 @@ These are edited directly on GitHub (open the file, click ✏️, change, **Comm
 
 | What | File |
 |---|---|
-| Course catalogue PDF | Replace `assets/course-catalogue.pdf` (open the `assets` folder, then **Add file → Upload files**, using the same file name) |
+| Course catalogue PDF (if you don't use the Drive link) | Replace `assets/course-catalogue.pdf` (open the `assets` folder, then **Add file → Upload files**, using the same file name) |
 | Logos | `assets/sanradiance-logo.png`, `assets/jayathisoft-logo.png` |
 | Next workshop (keep submissions separate) | In `config.js`, change `workshopId`, e.g. to `"hubli-2026-11-20"`. In the admin dashboard, "All workshops" still shows everything. |
 | Qualification or "attending as" options | `js/defaults.js` |

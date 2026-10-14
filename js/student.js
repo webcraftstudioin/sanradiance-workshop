@@ -5,11 +5,19 @@ import { $, $$, esc, initials, colorFor, toast, safeUrl } from "./util.js";
 let workshop = DEFAULT_WORKSHOP, programs = DEFAULT_PROGRAMS, stories = [];
 let rating = 0;
 
+// Uses the catalogue link set in the admin dashboard; falls back to assets/course-catalogue.pdf.
+const catalogCard = () => {
+  const link = safeUrl(workshop.catalogUrl || "");
+  const btn = link
+    ? `<a class="btn sm" href="${esc(link)}" target="_blank" rel="noopener">Download catalogue</a>`
+    : `<a class="btn sm" href="assets/course-catalogue.pdf" download="SanRadiance-JayathiSoft-Course-Catalogue.pdf">Download catalogue</a>`;
+  return CATALOG_CARD.replace("{{BTN}}", btn);
+};
 const CATALOG_CARD = `
   <div class="card catalog">
     <div class="catalog-ic" aria-hidden="true"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/><path d="M12 18v-6"/><path d="M9 15l3 3 3-3"/></svg></div>
     <div class="catalog-tx"><strong>Course catalogue</strong><small>All programs, syllabus &amp; contacts · PDF</small></div>
-    <a class="btn sm" href="assets/course-catalogue.pdf" download="SanRadiance-JayathiSoft-Course-Catalogue.pdf">Download catalogue</a>
+    {{BTN}}
   </div>`;
 
 async function loadContent() {
@@ -38,7 +46,7 @@ function renderForm() {
   $("#body").innerHTML = `
     ${configured ? "" : `<div class="notice">Setup not finished: this page can't save answers yet. Paste your Firebase settings into config.js (README step 3).</div>`}
     <div class="welcome">Thank you for attending this workshop! We appreciate your participation. Please fill out the form below to share your feedback and let us know whether you are interested in joining our courses.</div>
-    ${CATALOG_CARD}
+    ${catalogCard()}
     <form id="sForm" novalidate style="display:grid;gap:14px">
       <div class="card"><fieldset><legend>Student information</legend>
         <label class="f">Full name<input type="text" id="fName" autocomplete="name" maxlength="100" placeholder="e.g. Ananya Rao"></label>
@@ -181,7 +189,7 @@ function renderTab(t) {
     <div class="card"><h3>What the programs include</h3><ul>${INCLUDED.map((x) => `<li>${esc(x)}</li>`).join("")}</ul></div>
     <div class="card"><h3>Who can join</h3><ul><li>B.E., B.Tech, BCA and MCA students and graduates</li><li>Working professionals looking to move into higher-paying IT roles</li><li>Internship: CS, ECE, Data Science or AI/ML, 6th semester and above preferred</li></ul></div>
     <div class="card"><h3>How to register</h3><ol><li>Call or WhatsApp us on the number below.</li><li>Free counselling to pick the right program.</li><li>Confirm your seat in the next batch.</li></ol></div>
-    ${CATALOG_CARD}
+    ${catalogCard()}
     <div class="contact"><strong>Program enquiries</strong>Call / WhatsApp: <b><a href="tel:+91${esc(w.phone.replace(/\D/g, ""))}">${esc(w.phone)}</a></b><br>Email: <b>${esc(w.email)}</b><br>${esc(w.address)}<br>${esc(w.websites)}</div>
   </div>`;
 }

@@ -266,6 +266,10 @@ function renderContent(P) {
       </div>
       <label class="f">Topics covered <small>one per line</small><textarea id="wTopics">${esc((w.topics || []).join("\n"))}</textarea></label>
       <label class="f">Companies mentioned <small>comma separated</small><textarea id="wCos" style="min-height:60px">${esc((w.companies || []).join(", "))}</textarea></label>
+      <label class="f">Course catalogue link <small>Upload your PDF to Google Drive → Share → General access: "Anyone with the link" → Copy link, and paste it here. Leave empty to use the built-in catalogue.</small>
+        <input type="url" id="wCat" value="${esc(w.catalogUrl || "")}" placeholder="https://drive.google.com/file/d/…/view">
+      </label>
+      ${w.catalogUrl ? `<p style="margin:-4px 0 0;font-size:13px"><a href="${esc(safeUrl(w.catalogUrl))}" target="_blank" rel="noopener">Open current catalogue ↗</a></p>` : ""}
       <div><button class="btn sm" type="submit">Save workshop details</button></div>
     </form>
     <hr style="border:0;border-top:1px solid var(--border);margin:22px 0">
@@ -312,8 +316,10 @@ function renderContent(P) {
       title: $("#wTitle").value.trim(), date: $("#wDate").value.trim(), time: $("#wTime").value.trim(), venue: $("#wVenue").value.trim(),
       phone: $("#wPhone").value.trim(), email: $("#wEmail").value.trim(),
       topics: $("#wTopics").value.split("\n").map((s) => s.trim()).filter(Boolean).slice(0, 12),
-      companies: $("#wCos").value.split(",").map((s) => s.trim()).filter(Boolean).slice(0, 40)
+      companies: $("#wCos").value.split(",").map((s) => s.trim()).filter(Boolean).slice(0, 40),
+      catalogUrl: safeUrl($("#wCat").value.trim())
     };
+    if ($("#wCat").value.trim() && !data.catalogUrl) { toast("The catalogue link must start with https://"); return; }
     const { _saved, ...rest } = { ...workshop, ...data };
     try { await setDoc(doc(db, "settings", "workshop"), rest); toast("Saved. Students now see the updated details."); }
     catch { toast("Couldn't save. Try again."); }
