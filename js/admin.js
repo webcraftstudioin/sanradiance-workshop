@@ -82,11 +82,12 @@ function renderKPIs() {
   const n = subs.length, yes = subs.filter((s) => s.interest === "Yes").length;
   const avg = n ? subs.reduce((a, s) => a + (s.rating || 0), 0) / n : 0;
   const enr = subs.filter((s) => s.status === "Enrolled").length;
+  const refs = subs.filter((s) => s.refPhone).length;
   $("#kpis").innerHTML = `
     <div class="card kpi"><small>Responses</small><b>${n}</b><span>${filt.scope === "all" ? "all workshops" : "this workshop"}</span></div>
     <div class="card kpi"><small>Interested in a program</small><b class="acc">${yes}</b><span>${n ? Math.round((yes / n) * 100) : 0}% of respondents</span></div>
     <div class="card kpi"><small>Average rating</small><b>${avg.toFixed(1)}</b><span>out of 5</span></div>
-    <div class="card kpi"><small>Enrolled</small><b>${enr}</b><span>from follow-ups</span></div>`;
+    <div class="card kpi"><small>Enrolled</small><b>${enr}</b><span>${refs} friend referral${refs === 1 ? "" : "s"} to follow up</span></div>`;
 }
 
 function render() {
@@ -101,9 +102,9 @@ function render() {
 function filtered() {
   const q = filt.q.toLowerCase();
   return subs.filter((s) =>
-    (filt.int === "all" || s.interest === filt.int) &&
+    (filt.int === "all" || (filt.int === "ref" ? !!s.refPhone : s.interest === filt.int)) &&
     (filt.status === "all" || s.status === filt.status) &&
-    `${s.name} ${s.phone} ${s.qual} ${s.role} ${s.comment}`.toLowerCase().includes(q));
+    `${s.name} ${s.phone} ${s.qual} ${s.role} ${s.comment} ${s.refName || ""} ${s.refPhone || ""}`.toLowerCase().includes(q));
 }
 
 function renderSubs(P) {
@@ -111,14 +112,14 @@ function renderSubs(P) {
   P.innerHTML = `
     <div class="toolbar">
       <input type="text" id="aq" placeholder="Search name, phone, role, qualification, comment" value="${esc(filt.q)}" aria-label="Search">
-      <select id="ai" aria-label="Interest"><option value="all">All attendees</option><option value="Yes"${filt.int === "Yes" ? " selected" : ""}>Interested only</option><option value="No"${filt.int === "No" ? " selected" : ""}>Not interested</option></select>
+      <select id="ai" aria-label="Interest"><option value="all">All attendees</option><option value="Yes"${filt.int === "Yes" ? " selected" : ""}>Interested only</option><option value="No"${filt.int === "No" ? " selected" : ""}>Not interested</option><option value="ref"${filt.int === "ref" ? " selected" : ""}>Referred a friend</option></select>
       <select id="as" aria-label="Status"><option value="all">Any status</option>${STATUSES.map((x) => `<option${filt.status === x ? " selected" : ""}>${x}</option>`).join("")}</select>
       <select id="sc" aria-label="Workshop"><option value="this">This workshop</option><option value="all"${filt.scope === "all" ? " selected" : ""}>All workshops</option></select>
       <button class="btn ghost sm" id="exp">Download Excel (CSV)</button>
     </div>
     <p class="muted" style="margin:0 0 10px;font-size:13px">Showing ${rows.length} of ${subs.length}. Use student contact details only to follow up about this workshop and its programs.</p>
     <div class="tablewrap"><table>
-      <thead><tr><th>Name</th><th>Phone</th><th>Attending as</th><th>Qualification</th><th>Interested</th><th>Rating</th><th>Comments</th><th>Submitted</th><th>Follow-up</th><th>Notes</th><th></th></tr></thead>
+      <thead><tr><th>Name</th><th>Phone</th><th>Attending as</th><th>Qualification</th><th>Interested</th><th>Rating</th><th>Comments</th><th>Referred friend</th><th>Submitted</th><th>Follow-up</th><th>Notes</th><th></th></tr></thead>
       <tbody>${rows.map((s) => `<tr>
         <td><strong>${esc(s.name)}</strong>${s.status === "New" ? ' <span class="pill new">new</span>' : ""}</td>
         <td class="num">${esc(s.phone)}<div class="acts" style="margin-top:4px"><a href="tel:+91${esc(s.phone)}">Call</a><a href="https://wa.me/91${esc(s.phone)}" target="_blank" rel="noopener">WhatsApp</a></div></td>
@@ -126,13 +127,14 @@ function renderSubs(P) {
         <td><span class="pill ${s.interest === "Yes" ? "yes" : "no"}">${esc(s.interest)}</span></td>
         <td class="starline" aria-label="${s.rating} of 5">${stars(s.rating || 0)}</td>
         <td style="max-width:240px">${esc(s.comment) || '<span class="muted">—</span>'}</td>
+        <td>${s.refPhone ? `<strong>${esc(s.refName)}</strong><div class="num">${esc(s.refPhone)}</div><div class="acts" style="margin-top:4px"><a href="tel:+91${esc(s.refPhone)}">Call</a><a href="https://wa.me/91${esc(s.refPhone)}" target="_blank" rel="noopener">WhatsApp</a></div>` : '<span class="muted">—</span>'}</td>
         <td class="num">${fmtTime(s.createdAt)}</td>
         <td><select data-st="${s.id}" aria-label="Follow-up status for ${esc(s.name)}">${STATUSES.map((x) => `<option${x === s.status ? " selected" : ""}>${x}</option>`).join("")}</select></td>
         <td><input class="note" type="text" data-note="${s.id}" value="${esc(s.notes || "")}" placeholder="Add a note" aria-label="Notes for ${esc(s.name)}" maxlength="500"></td>
         <td>${confirmDel === s.id
           ? `<span class="confirm">Delete? <button class="btn danger sm" data-delyes="${s.id}">Yes</button><button class="btn ghost sm" data-delno>No</button></span>`
           : `<button class="btn ghost sm" data-del="${s.id}" aria-label="Delete ${esc(s.name)}">Delete</button>`}</td>
-      </tr>`).join("") || `<tr><td colspan="11" class="empty">${subs.length ? "No students match these filters." : "No submissions yet. They appear here instantly when students submit the form."}</td></tr>`}</tbody>
+      </tr>`).join("") || `<tr><td colspan="12" class="empty">${subs.length ? "No students match these filters." : "No submissions yet. They appear here instantly when students submit the form."}</td></tr>`}</tbody>
     </table></div>`;
   const keepFocus = (id, fn) => (e) => { const p = e.target.selectionStart; fn(e); const el = $(id); el.focus(); el.setSelectionRange(p, p); };
   $("#aq").oninput = keepFocus("#aq", (e) => { filt.q = e.target.value; renderSubs(P); });
@@ -160,9 +162,9 @@ function renderSubs(P) {
 function exportCSV() {
   const rows = filtered();
   if (!rows.length) { toast("Nothing to export with these filters"); return; }
-  const head = ["Name", "Phone", "Attending as", "Qualification", "Interested", "Attended", "Rating", "Comments", "Status", "Notes", "Submitted", "Workshop"];
+  const head = ["Name", "Phone", "Attending as", "Qualification", "Interested", "Attended", "Rating", "Comments", "Referred friend", "Friend's phone", "Status", "Notes", "Submitted", "Workshop"];
   const cell = (v) => { let s = String(v ?? ""); if (/^[=+\-@]/.test(s)) s = "'" + s; return `"${s.replace(/"/g, '""')}"`; };
-  const lines = [head.map(cell).join(",")].concat(rows.map((s) => [s.name, s.phone, s.role, s.qual, s.interest, s.attended, s.rating, s.comment, s.status, s.notes, fmtTime(s.createdAt), s.workshopId].map(cell).join(",")));
+  const lines = [head.map(cell).join(",")].concat(rows.map((s) => [s.name, s.phone, s.role, s.qual, s.interest, s.attended, s.rating, s.comment, s.refName, s.refPhone, s.status, s.notes, fmtTime(s.createdAt), s.workshopId].map(cell).join(",")));
   const blob = new Blob(["﻿" + lines.join("\r\n")], { type: "text/csv;charset=utf-8" });
   const a = document.createElement("a");
   a.href = URL.createObjectURL(blob);

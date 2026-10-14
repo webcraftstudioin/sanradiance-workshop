@@ -20,7 +20,9 @@ service cloud.firestore {
     // Student submissions: anyone can submit once valid; only admins can read or change them.
     match /submissions/{id} {
       allow create: if
-        request.resource.data.keys().hasOnly(['workshopId','name','phone','role','qual','interest','attended','rating','comment','consent','status','notes','createdAt'])
+        request.resource.data.keys().hasOnly(['workshopId','name','phone','role','qual','interest','attended','rating','comment','consent','status','notes','createdAt','refName','refPhone'])
+        && request.resource.data.get('refName', '') is string && request.resource.data.get('refName', '').size() <= 100
+        && (request.resource.data.get('refPhone', '') == '' || request.resource.data.get('refPhone', '').matches('^[6-9][0-9]{9}$'))
         && request.resource.data.name is string && request.resource.data.name.size() > 0 && request.resource.data.name.size() <= 100
         && request.resource.data.phone is string && request.resource.data.phone.matches('^[6-9][0-9]{9}$')
         && request.resource.data.role is string && request.resource.data.role.size() <= 40

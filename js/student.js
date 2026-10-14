@@ -52,6 +52,12 @@ function renderForm() {
           <div class="seg"><label><input type="radio" name="fInt" value="Yes">Yes</label><label><input type="radio" name="fInt" value="No">No</label></div></div>
         <label class="f">Comments or description<textarea id="fCom" maxlength="1000" placeholder="Feedback, suggestions, questions or your overall experience"></textarea></label>
       </fieldset></div>
+      <div class="card"><fieldset><legend>Refer your friend <span style="text-transform:none;letter-spacing:0;font-weight:500;color:var(--muted)">(optional)</span></legend>
+        <p class="muted" style="margin:0;font-size:13px">Know someone who would benefit from these programs? Share their details and our team will reach out.</p>
+        <label class="f">Friend's name<input type="text" id="fRefName" autocomplete="off" maxlength="100" placeholder="e.g. Rahul Kumar"></label>
+        <label class="f">Friend's contact number<input type="tel" id="fRefPhone" inputmode="numeric" autocomplete="off" maxlength="20" placeholder="10-digit mobile number"></label>
+        <small class="muted" style="font-size:12px">Please refer only friends who are happy to be contacted.</small>
+      </fieldset></div>
       <div class="card"><fieldset><legend>Workshop feedback</legend>
         <div class="f">Did you attend the workshop?
           <div class="seg"><label><input type="radio" name="fAtt" value="Yes" checked>Yes, I attended</label><label><input type="radio" name="fAtt" value="No">No</label></div></div>
@@ -69,12 +75,19 @@ function renderForm() {
   $("#sForm").onsubmit = submit;
 }
 
+function cleanPhone(v) {
+  let p = String(v || "").replace(/\D/g, "");
+  if (p.length === 12 && p.startsWith("91")) p = p.slice(2);
+  if (p.length === 11 && p.startsWith("0")) p = p.slice(1);
+  return p;
+}
+
 async function submit(e) {
   e.preventDefault();
   const name = $("#fName").value.trim().replace(/\s+/g, " ");
-  let phone = $("#fPhone").value.replace(/\D/g, "");
-  if (phone.length === 12 && phone.startsWith("91")) phone = phone.slice(2);
-  if (phone.length === 11 && phone.startsWith("0")) phone = phone.slice(1);
+  const phone = cleanPhone($("#fPhone").value);
+  const refName = $("#fRefName").value.trim().replace(/\s+/g, " ");
+  const refPhone = cleanPhone($("#fRefPhone").value);
   const role = $("#fRole").value, qual = $("#fQual").value;
   const intr = $('input[name="fInt"]:checked'), att = $('input[name="fAtt"]:checked');
   let m = "";
@@ -83,6 +96,10 @@ async function submit(e) {
   else if (!role) m = "Please tell us how you are attending (student, parent, etc.).";
   else if (!qual) m = "Please select your qualification.";
   else if (!intr) m = "Please tell us if you're interested in joining a course.";
+  else if (refName && !refPhone) m = "Please enter your friend's contact number, or clear their name.";
+  else if (refPhone && !refName) m = "Please enter your friend's name, or clear their number.";
+  else if (refPhone && !/^[6-9]\d{9}$/.test(refPhone)) m = "Please enter a valid 10-digit number for your friend.";
+  else if (refPhone && refPhone === phone) m = "Your friend's number can't be the same as yours.";
   else if (!rating) m = "Please rate the workshop (tap the stars).";
   else if (!$("#fConsent").checked) m = "Please tick the consent box so we can contact you.";
   $("#fErr").textContent = m;
@@ -91,13 +108,15 @@ async function submit(e) {
 
   const btn = $("#fSubmit"); btn.disabled = true; btn.textContent = "Submitting…";
   try {
-    await addDoc(collection(db, "submissions"), {
+    const entry = {
       workshopId, name, phone, role, qual,
       interest: intr.value, attended: att.value, rating,
       comment: $("#fCom").value.trim().slice(0, 1000),
       consent: true, status: "New", notes: "",
       createdAt: serverTimestamp()
-    });
+    };
+    if (refName && refPhone) { entry.refName = refName.slice(0, 100); entry.refPhone = refPhone; }
+    await addDoc(collection(db, "submissions"), entry);
     renderThanks(name.split(" ")[0]);
     window.scrollTo(0, 0);
   } catch (err) {
