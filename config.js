@@ -7,12 +7,12 @@
 */
 window.APP_CONFIG = {
   firebase: {
-    apiKey: "PASTE_API_KEY_HERE",
-    authDomain: "PASTE_AUTH_DOMAIN_HERE",
-    projectId: "PASTE_PROJECT_ID_HERE",
-    storageBucket: "PASTE_STORAGE_BUCKET_HERE",
-    messagingSenderId: "PASTE_SENDER_ID_HERE",
-    appId: "PASTE_APP_ID_HERE"
+    apiKey: "AIzaSyAQgtcf_mRBvDtVSw3BQnJRGdnNz8i2VZ0",
+    authDomain: "sanradiance-workshop.firebaseapp.com",
+    projectId: "sanradiance-workshop",
+    storageBucket: "sanradiance-workshop.firebasestorage.app",
+    messagingSenderId: "721818273843",
+    appId: "1:721818273843:web:2861792d0ad462d68dbb46"
   },
 
   // A short code for this workshop. Change it for your next workshop
