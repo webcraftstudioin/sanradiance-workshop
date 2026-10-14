@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Scan to share your feedback</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Outfit:wght@600;700;800&display=swap">
+<link rel="stylesheet" href="css/styles.css">
+<style>body{background:var(--night)}</style>
+</head>
+<body>
+<div class="glow glow-big proj">
+  <div class="proj-grid">
+    <div>
+      <span class="pill-badge"><i></i>Thank you, Davanagere</span>
+      <h1>Scan to share <span class="gtext">your feedback</span><br><span class="btext">&amp; explore our programs</span></h1>
+      <p>Point your phone camera at the code. Rate today's session, tell us your interest, and explore <b>JayathiSoft training programs</b> and the <b>SanRadiance AI Internship</b>.</p>
+      <div class="proj-logos"><img src="assets/sanradiance-logo.png" alt="SanRadiance"><span></span><img src="assets/jayathisoft-logo.png" alt="JayathiSoft"></div>
+    </div>
+    <div class="qrbox">
+      <div class="qr" id="qr" role="img" aria-label="QR code to the feedback form"></div>
+      <span class="url" id="url"></span>
+    </div>
+  </div>
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script>
+  // The QR always points to this site's own feedback page, so nothing needs to be configured.
+  var target = new URL("./", location.href).href;
+  document.getElementById("url").textContent = target.replace(/^https?:\/\//, "").replace(/\/$/, "");
+  new QRCode(document.getElementById("qr"), { text: target, width: 600, height: 600, colorDark: "#09090b", colorLight: "#ffffff", correctLevel: QRCode.CorrectLevel.M });
+</script>
+</body>
+</html>

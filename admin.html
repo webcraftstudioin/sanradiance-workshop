@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex,nofollow">
+<title>Admin · Workshop Connect</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Outfit:wght@600;700;800&display=swap">
+<link rel="stylesheet" href="css/styles.css">
+<script src="config.js"></script>
+</head>
+<body>
+<header class="a-nav">
+  <div class="wrap">
+    <div class="logo"><span class="tile"><img src="assets/sanradiance-logo.png" alt="SanRadiance"><img src="assets/jayathisoft-logo.png" alt="JayathiSoft"></span><span>Admin</span></div>
+    <div class="who-am-i" id="whoami" hidden><span id="meEmail"></span><button class="btn ghost sm" id="logout">Sign out</button></div>
+  </div>
+</header>
+
+<main class="wrap a-main">
+  <section id="setupMsg" class="notice" hidden>Setup not finished: paste your Firebase settings into <b>config.js</b> (README step 3), then reload this page.</section>
+
+  <form id="loginForm" class="card login" hidden novalidate>
+    <h1 style="font-size:22px">Staff sign in</h1>
+    <p class="muted" style="margin:0;font-size:14px">Use the email and password your admin created for you in Firebase.</p>
+    <label class="f">Email<input type="email" id="lEmail" autocomplete="username" required></label>
+    <label class="f">Password<input type="password" id="lPass" autocomplete="current-password" required></label>
+    <div class="err" id="lErr" role="alert"></div>
+    <button class="btn" type="submit" id="lBtn">Sign in</button>
+    <button class="btn ghost sm" type="button" id="lReset">Forgot password?</button>
+  </form>
+
+  <section id="dash" hidden>
+    <div class="kpis" id="kpis"></div>
+    <div class="atabs" role="tablist">
+      <button role="tab" data-at="subs" aria-selected="true">Submissions</button>
+      <button role="tab" data-at="fb" aria-selected="false">Ratings &amp; feedback</button>
+      <button role="tab" data-at="tm" aria-selected="false">Testimonials</button>
+      <button role="tab" data-at="cs" aria-selected="false">Workshop &amp; programs</button>
+    </div>
+    <div class="card panel" id="panel"></div>
+  </section>
+</main>
+<script type="module" src="js/admin.js"></script>
+</body>
+</html>

@@ -1,0 +1,56 @@
+rules_version = '2';
+
+// ─────────────────────────────────────────────────────────────
+// SECURITY RULES — copy this whole file into
+// Firebase console → Firestore Database → Rules → Publish.
+//
+// Put the email of EVERY staff member who should open the admin
+// dashboard in the list below (same emails you create under
+// Authentication → Users). Keep the quotes and commas.
+// ─────────────────────────────────────────────────────────────
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function isAdmin() {
+      return request.auth != null && request.auth.token.email in [
+        'admin@example.com'
+      ];
+    }
+
+    // Student submissions: anyone can submit once valid; only admins can read or change them.
+    match /submissions/{id} {
+      allow create: if
+        request.resource.data.keys().hasOnly(['workshopId','name','phone','role','qual','interest','attended','rating','comment','consent','status','notes','createdAt'])
+        && request.resource.data.name is string && request.resource.data.name.size() > 0 && request.resource.data.name.size() <= 100
+        && request.resource.data.phone is string && request.resource.data.phone.matches('^[6-9][0-9]{9}$')
+        && request.resource.data.role is string && request.resource.data.role.size() <= 40
+        && request.resource.data.qual is string && request.resource.data.qual.size() <= 40
+        && request.resource.data.interest in ['Yes','No']
+        && request.resource.data.attended in ['Yes','No']
+        && request.resource.data.rating is int && request.resource.data.rating >= 1 && request.resource.data.rating <= 5
+        && request.resource.data.comment is string && request.resource.data.comment.size() <= 1000
+        && request.resource.data.workshopId is string && request.resource.data.workshopId.size() <= 60
+        && request.resource.data.consent == true
+        && request.resource.data.status == 'New'
+        && request.resource.data.notes == ''
+        && request.resource.data.createdAt == request.time;
+      allow read, update, delete: if isAdmin();
+    }
+
+    // Workshop details and programs: everyone can read, only admins can edit.
+    match /settings/{id} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+    match /programs/{id} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    // Testimonials: students only see stories marked "show"; admins see and edit all.
+    match /testimonials/{id} {
+      allow read: if resource.data.show == true || isAdmin();
+      allow write: if isAdmin();
+    }
+  }
+}
