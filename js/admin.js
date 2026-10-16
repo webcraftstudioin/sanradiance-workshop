@@ -2,9 +2,9 @@ import {
   db, auth, configured, workshopId,
   collection, doc, addDoc, setDoc, getDoc, getDocs, updateDoc, deleteDoc, query, where, orderBy, onSnapshot, writeBatch, serverTimestamp,
   signInWithEmailAndPassword, signOut, onAuthStateChanged, sendPasswordResetEmail
-} from "./firebase.js?v=20261016b";
-import { DEFAULT_WORKSHOP, DEFAULT_PROGRAMS, DEFAULT_TESTIMONIALS, STATUSES } from "./defaults.js?v=20261016b";
-import { $, $$, esc, stars, toast, fmtTime, safeUrl } from "./util.js?v=20261016b";
+} from "./firebase.js?v=20261016c";
+import { DEFAULT_WORKSHOP, DEFAULT_PROGRAMS, DEFAULT_TESTIMONIALS, STATUSES, upgradeContacts } from "./defaults.js?v=20261016c";
+import { $, $$, esc, stars, toast, fmtTime, safeUrl } from "./util.js?v=20261016c";
 
 let subs = [], testimonials = [], programs = [], workshop = { ...DEFAULT_WORKSHOP };
 let tab = "subs", filt = { q: "", int: "all", status: "all", scope: "this" };
@@ -67,7 +67,7 @@ function start() {
   listenSubs();
   unsubs.push(onSnapshot(query(collection(db, "testimonials"), orderBy("order")), (s) => { testimonials = s.docs.map((d) => ({ id: d.id, ...d.data() })); if (tab === "tm") render(); }));
   unsubs.push(onSnapshot(query(collection(db, "programs"), orderBy("order")), (s) => { programs = s.docs.map((d) => ({ id: d.id, ...d.data() })); if (tab === "cs" && !editingP) render(); }));
-  unsubs.push(onSnapshot(doc(db, "settings", "workshop"), (s) => { workshop = s.exists() ? { ...DEFAULT_WORKSHOP, ...s.data() } : { ...DEFAULT_WORKSHOP }; workshop._saved = s.exists(); }));
+  unsubs.push(onSnapshot(doc(db, "settings", "workshop"), (s) => { workshop = s.exists() ? upgradeContacts({ ...DEFAULT_WORKSHOP, ...s.data() }) : { ...DEFAULT_WORKSHOP }; workshop._saved = s.exists(); }));
   render();
 }
 

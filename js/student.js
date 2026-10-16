@@ -1,6 +1,6 @@
-import { db, configured, workshopId, collection, doc, addDoc, getDoc, getDocs, query, where, orderBy, serverTimestamp } from "./firebase.js?v=20261016b";
-import { DEFAULT_WORKSHOP, DEFAULT_PROGRAMS, DEFAULT_TESTIMONIALS, INCLUDED, ROLES, QUALIFICATIONS } from "./defaults.js?v=20261016b";
-import { $, $$, esc, initials, colorFor, toast, safeUrl } from "./util.js?v=20261016b";
+import { db, configured, workshopId, collection, doc, addDoc, getDoc, getDocs, query, where, orderBy, serverTimestamp } from "./firebase.js?v=20261016c";
+import { DEFAULT_WORKSHOP, DEFAULT_PROGRAMS, DEFAULT_TESTIMONIALS, INCLUDED, ROLES, QUALIFICATIONS, upgradeContacts } from "./defaults.js?v=20261016c";
+import { $, $$, esc, initials, colorFor, toast, safeUrl } from "./util.js?v=20261016c";
 
 let workshop = DEFAULT_WORKSHOP, programs = DEFAULT_PROGRAMS, stories = [];
 let rating = 0;
@@ -24,7 +24,7 @@ async function loadContent() {
   if (!configured) return;
   try {
     const w = await getDoc(doc(db, "settings", "workshop"));
-    if (w.exists()) workshop = { ...DEFAULT_WORKSHOP, ...w.data() };
+    if (w.exists()) workshop = upgradeContacts({ ...DEFAULT_WORKSHOP, ...w.data() });
   } catch (e) { console.warn("workshop", e); }
   try {
     const p = await getDocs(query(collection(db, "programs"), orderBy("order")));

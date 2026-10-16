@@ -14,12 +14,20 @@ export const DEFAULT_WORKSHOP = {
     "Training and internship paths to get there"
   ],
   companies: ["Google", "Microsoft", "Accenture", "Cognizant", "Capgemini", "Infosys", "IBM", "VMware", "Cisco", "NetApp", "SanDisk", "AMD", "Intel", "Dell", "HP", "Nutanix", "Apple"],
-  phone: "84968 75863",
-  email: "contact@sanradiance.com",
+  phone: "63635 52305",
+  email: "admin@jayathisoft.com",
   websites: "sanradiance.com · jayathisoft.com",
   whatsappUrl: "https://chat.whatsapp.com/G8KlhxQWQ31KZGbOYFRLEf",
   address: "SanRadiance HQ: Arekere, Bengaluru 560076"
 };
+
+// Old contact details that are swapped for the current ones above when loaded from the database.
+export const OLD_CONTACTS = { phone: ["84968 75863"], email: ["contact@sanradiance.com"] };
+export function upgradeContacts(w) {
+  if (OLD_CONTACTS.phone.includes(w.phone)) w.phone = DEFAULT_WORKSHOP.phone;
+  if (OLD_CONTACTS.email.includes(w.email)) w.email = DEFAULT_WORKSHOP.email;
+  return w;
+}
 
 export const DEFAULT_PROGRAMS = [
   { order: 1, org: "JayathiSoft", name: "AI Infra Engineer", tag: "Training", dur: "On enquiry", fee: "On enquiry", batch: "To confirm", mode: "Classroom / online",
