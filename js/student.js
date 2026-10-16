@@ -134,11 +134,25 @@ async function submit(e) {
   }
 }
 
+function whatsappCard() {
+  const link = safeUrl(workshop.whatsappUrl || "");
+  if (!link) return "";
+  return `<div class="card wa-card">
+    <div class="wa-ic" aria-hidden="true"><svg width="26" height="26" viewBox="0 0 24 24" fill="#fff"><path d="M12.04 2a9.9 9.9 0 0 0-8.5 15l-1.3 4.8 4.9-1.3A9.9 9.9 0 1 0 12.04 2zm0 18.1a8.2 8.2 0 0 1-4.2-1.15l-.3-.18-2.9.76.78-2.83-.2-.3a8.2 8.2 0 1 1 6.8 3.7zm4.5-6.1c-.25-.12-1.47-.72-1.7-.8-.23-.09-.4-.13-.56.12-.17.25-.64.8-.79.97-.14.16-.29.18-.54.06a6.7 6.7 0 0 1-3.34-2.92c-.25-.44.25-.4.72-1.34.08-.16.04-.3-.02-.43l-.76-1.83c-.2-.48-.4-.41-.56-.42h-.48a.92.92 0 0 0-.66.31 2.8 2.8 0 0 0-.87 2.07 4.85 4.85 0 0 0 1.02 2.58 11.1 11.1 0 0 0 4.25 3.75c1.58.68 2.2.74 2.99.62.48-.07 1.47-.6 1.68-1.18.2-.58.2-1.08.14-1.18-.06-.1-.23-.17-.48-.29z"/></svg></div>
+    <div class="wa-tx">
+      <strong>Join our WhatsApp community</strong>
+      <p>We'll share all updates about this workshop, our courses, upcoming batches and career opportunities here.</p>
+    </div>
+    <a class="btn wa-btn" href="${esc(link)}" target="_blank" rel="noopener">Join WhatsApp community</a>
+  </div>`;
+}
+
 function renderThanks(first) {
   $("#phTitle").textContent = `Thank you, ${first}!`;
   const hasStories = stories.length > 0;
   $("#body").innerHTML = `
     <div class="card thanks"><div class="tick" aria-hidden="true">✓</div><h2 style="font-size:19px">Your feedback has been submitted</h2><p class="muted" style="margin:0;font-size:14px">Our team will reach out if you showed interest in a program. Meanwhile, explore below.</p></div>
+    ${whatsappCard()}
     <div class="ptabs" role="tablist">
       ${hasStories ? `<button role="tab" data-pt="stories" aria-selected="true">Success stories</button>` : ""}
       <button role="tab" data-pt="courses" aria-selected="${hasStories ? "false" : "true"}">Workshop &amp; programs</button>

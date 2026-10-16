@@ -17,6 +17,7 @@ export const DEFAULT_WORKSHOP = {
   phone: "84968 75863",
   email: "contact@sanradiance.com",
   websites: "sanradiance.com · jayathisoft.com",
+  whatsappUrl: "https://chat.whatsapp.com/G8KlhxQWQ31KZGbOYFRLEf",
   address: "SanRadiance HQ: Arekere, Bengaluru 560076"
 };
 

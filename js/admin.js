@@ -269,6 +269,9 @@ function renderContent(P) {
       <label class="f">Course catalogue link <small>Upload your PDF to Google Drive → Share → General access: "Anyone with the link" → Copy link, and paste it here. Leave empty to use the built-in catalogue.</small>
         <input type="url" id="wCat" value="${esc(w.catalogUrl || "")}" placeholder="https://drive.google.com/file/d/…/view">
       </label>
+      <label class="f">WhatsApp community link <small>Shown to students after they submit, with a "Join WhatsApp community" button. Leave empty to hide it.</small>
+        <input type="url" id="wWa" value="${esc(w.whatsappUrl || "")}" placeholder="https://chat.whatsapp.com/…">
+      </label>
       ${w.catalogUrl ? `<p style="margin:-4px 0 0;font-size:13px"><a href="${esc(safeUrl(w.catalogUrl))}" target="_blank" rel="noopener">Open current catalogue ↗</a></p>` : ""}
       <div><button class="btn sm" type="submit">Save workshop details</button></div>
     </form>
@@ -317,8 +320,10 @@ function renderContent(P) {
       phone: $("#wPhone").value.trim(), email: $("#wEmail").value.trim(),
       topics: $("#wTopics").value.split("\n").map((s) => s.trim()).filter(Boolean).slice(0, 12),
       companies: $("#wCos").value.split(",").map((s) => s.trim()).filter(Boolean).slice(0, 40),
-      catalogUrl: safeUrl($("#wCat").value.trim())
+      catalogUrl: safeUrl($("#wCat").value.trim()),
+      whatsappUrl: safeUrl($("#wWa").value.trim())
     };
+    if ($("#wWa").value.trim() && !data.whatsappUrl) { toast("The WhatsApp link must start with https://"); return; }
     if ($("#wCat").value.trim() && !data.catalogUrl) { toast("The catalogue link must start with https://"); return; }
     const { _saved, ...rest } = { ...workshop, ...data };
     try { await setDoc(doc(db, "settings", "workshop"), rest); toast("Saved. Students now see the updated details."); }
