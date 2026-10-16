@@ -94,7 +94,7 @@ This decides who can see student phone numbers.
 
 ## On the workshop day
 
-- On the projector laptop, open **`…/qr.html`** and press **F11** for full screen.
+- On the projector laptop, open **`…/qr.html`** and press **F11** for full screen. It has 2 slides: feedback QR and WhatsApp community QR. Use the **→ / ←** keys (or a presentation clicker) to switch. `…/qr.html#whatsapp` opens the WhatsApp slide directly. To change the WhatsApp link on this slide, edit `WHATSAPP_LINK` near the bottom of `qr.html`.
 - Keep **`…/admin.html`** open on another device to watch submissions arrive live.
 - After the event: **Submissions → Download Excel (CSV)** gives you the full list for follow-up. It opens in Excel or Google Sheets.
 

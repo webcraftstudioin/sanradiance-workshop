@@ -4,32 +4,118 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="robots" content="noindex">
-<title>Scan to share your feedback</title>
+<title>Scan the QR code · SanRadiance × JayathiSoft</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Outfit:wght@600;700;800&display=swap">
-<link rel="stylesheet" href="css/styles.css?v=20261016d">
-<style>body{background:var(--night)}</style>
+<link rel="stylesheet" href="css/styles.css?v=20261016e">
+<style>
+  body{background:var(--night);overflow:hidden}
+  .slide{position:fixed;inset:0;opacity:0;visibility:hidden;transition:opacity .45s ease,visibility .45s}
+  .slide.on{opacity:1;visibility:visible}
+  .slide .proj{height:100%}
+  /* WhatsApp slide accents */
+  .wa .glow-big::before{background:#128c4a}
+  .wa .glow-big::after{background:#0e7490}
+  .wa-text{background:linear-gradient(135deg,#86efac 0%,#4ade80 45%,#22d3ee 100%);-webkit-background-clip:text;background-clip:text;color:transparent}
+  .wa .qr{box-shadow:0 0 0 6px #25D366,0 0 90px rgba(37,211,102,.55)}
+  .wa-badge{display:inline-flex;align-items:center;gap:10px;background:#25D366;color:#fff;font-weight:700;border-radius:999px;padding:10px 20px;font-size:clamp(15px,1.4vw,20px);margin-top:26px}
+  .wa-points{list-style:none;padding:0;margin:22px 0 0;display:grid;gap:10px;color:#d4d4d8;font-size:clamp(15px,1.35vw,19px)}
+  .wa-points li{display:flex;gap:12px;align-items:center}
+  .wa-points li::before{content:"";width:9px;height:9px;border-radius:50%;background:#4ade80;flex:none}
+  .scan-label{font-size:16px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:#86efac}
+  /* slider controls */
+  .nav{position:fixed;left:50%;bottom:22px;transform:translateX(-50%);display:flex;align-items:center;gap:14px;z-index:5}
+  .nav button{border:1px solid rgba(255,255,255,.25);background:rgba(255,255,255,.06);color:#e4e4e7;border-radius:999px;cursor:pointer;font:600 14px var(--f-body)}
+  .nav .arrow{width:42px;height:42px;font-size:18px}
+  .nav .dot{width:12px;height:12px;padding:0}
+  .nav .dot[aria-current="true"]{background:#fff;border-color:#fff}
+  .nav .hint{color:#71717a;font-size:12px}
+  body.hide-ui .nav{opacity:0;transition:opacity .4s}
+</style>
 </head>
 <body>
-<div class="glow glow-big proj">
-  <div class="proj-grid">
-    <div>
-      <span class="pill-badge"><i></i>Thank you, Davanagere</span>
-      <h1>Scan to share <span class="gtext">your feedback</span><br><span class="btext">&amp; explore our programs</span></h1>
-      <p>Point your phone camera at the code. Rate today's session, tell us your interest, and explore <b>JayathiSoft training programs</b> and the <b>SanRadiance AI Internship</b>.</p>
-      <div class="proj-logos"><img src="assets/sanradiance-logo.png" alt="SanRadiance"><span></span><img src="assets/jayathisoft-logo.png" alt="JayathiSoft"></div>
-    </div>
-    <div class="qrbox">
-      <div class="qr" id="qr" role="img" aria-label="QR code to the feedback form"></div>
-      <span class="url" id="url"></span>
+
+<!-- Slide 1: feedback form -->
+<section class="slide on" id="s-feedback" aria-label="Feedback QR">
+  <div class="glow glow-big proj">
+    <div class="proj-grid">
+      <div>
+        <span class="pill-badge"><i></i>Thank you, Davanagere</span>
+        <h1>Scan to share <span class="gtext">your feedback</span><br><span class="btext">&amp; explore our programs</span></h1>
+        <p>Point your phone camera at the code. Rate today's session, tell us your interest, and explore <b>JayathiSoft training programs</b> and the <b>SanRadiance AI Internship</b>.</p>
+        <div class="proj-logos"><img src="assets/sanradiance-logo.png" alt="SanRadiance"><span></span><img src="assets/jayathisoft-logo.png" alt="JayathiSoft"></div>
+      </div>
+      <div class="qrbox">
+        <div class="qr" id="qr" role="img" aria-label="QR code to the feedback form"></div>
+        <span class="url" id="url"></span>
+      </div>
     </div>
   </div>
-</div>
+</section>
+
+<!-- Slide 2: WhatsApp community -->
+<section class="slide wa" id="s-whatsapp" aria-label="WhatsApp community QR">
+  <div class="glow glow-big proj">
+    <div class="proj-grid">
+      <div>
+        <span class="pill-badge"><i></i>Stay connected</span>
+        <h1>Join our <span class="wa-text">WhatsApp community</span></h1>
+        <p>Scan the code to join instantly. We'll share all updates about this workshop and our courses right here.</p>
+        <ul class="wa-points">
+          <li>Workshop updates and announcements</li>
+          <li>Courses, upcoming batches and fees</li>
+          <li>Career opportunities and placement guidance</li>
+        </ul>
+        <div class="proj-logos"><img src="assets/sanradiance-logo.png" alt="SanRadiance"><span></span><img src="assets/jayathisoft-logo.png" alt="JayathiSoft"></div>
+      </div>
+      <div class="qrbox">
+        <div class="qr" id="qrWa" role="img" aria-label="QR code to join the WhatsApp community"></div>
+        <span class="scan-label">Scan to join on WhatsApp</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<nav class="nav" aria-label="Slides">
+  <button class="arrow" id="prev" aria-label="Previous slide">‹</button>
+  <button class="dot" data-i="0" aria-label="Feedback QR" aria-current="true"></button>
+  <button class="dot" data-i="1" aria-label="WhatsApp community QR"></button>
+  <button class="arrow" id="next" aria-label="Next slide">›</button>
+  <span class="hint">← → keys · F11 full screen</span>
+</nav>
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 <script>
-  // The QR always points to this site's own feedback page, so nothing needs to be configured.
+  // WhatsApp community invite link shown on slide 2.
+  var WHATSAPP_LINK = "https://chat.whatsapp.com/G8KlhxQWQ31KZGbOYFRLEf";
+
+  // Slide 1 always points to this site's own feedback page.
   var target = new URL("./", location.href).href;
   document.getElementById("url").textContent = target.replace(/^https?:\/\//, "").replace(/\/$/, "");
-  new QRCode(document.getElementById("qr"), { text: target, width: 600, height: 600, colorDark: "#09090b", colorLight: "#ffffff", correctLevel: QRCode.CorrectLevel.M });
+  var opts = { width: 600, height: 600, colorDark: "#09090b", colorLight: "#ffffff", correctLevel: QRCode.CorrectLevel.M };
+  new QRCode(document.getElementById("qr"), Object.assign({ text: target }, opts));
+  new QRCode(document.getElementById("qrWa"), Object.assign({ text: WHATSAPP_LINK }, opts));
+
+  // Slider: arrow keys, space, on-screen buttons. qr.html#whatsapp opens slide 2 directly.
+  var slides = [document.getElementById("s-feedback"), document.getElementById("s-whatsapp")];
+  var dots = document.querySelectorAll(".dot");
+  var cur = location.hash === "#whatsapp" ? 1 : 0;
+  function show(i) {
+    cur = (i + slides.length) % slides.length;
+    slides.forEach(function (s, k) { s.classList.toggle("on", k === cur); });
+    dots.forEach(function (d, k) { d.setAttribute("aria-current", k === cur ? "true" : "false"); });
+    history.replaceState(null, "", cur === 1 ? "#whatsapp" : "#feedback");
+  }
+  show(cur);
+  document.getElementById("prev").onclick = function () { show(cur - 1); };
+  document.getElementById("next").onclick = function () { show(cur + 1); };
+  dots.forEach(function (d) { d.onclick = function () { show(+d.dataset.i); }; });
+  document.addEventListener("keydown", function (e) {
+    if (e.key === "ArrowRight" || e.key === "PageDown" || e.key === " ") { e.preventDefault(); show(cur + 1); }
+    if (e.key === "ArrowLeft" || e.key === "PageUp") { e.preventDefault(); show(cur - 1); }
+  });
+  // Hide the controls after a few seconds without mouse movement, so the projector shows a clean slide.
+  var t; function wake() { document.body.classList.remove("hide-ui"); clearTimeout(t); t = setTimeout(function () { document.body.classList.add("hide-ui"); }, 3000); }
+  document.addEventListener("mousemove", wake); wake();
 </script>
 </body>
 </html>
