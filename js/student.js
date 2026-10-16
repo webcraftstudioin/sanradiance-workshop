@@ -1,6 +1,6 @@
-import { db, configured, workshopId, collection, doc, addDoc, getDoc, getDocs, query, where, orderBy, serverTimestamp } from "./firebase.js";
-import { DEFAULT_WORKSHOP, DEFAULT_PROGRAMS, DEFAULT_TESTIMONIALS, INCLUDED, ROLES, QUALIFICATIONS } from "./defaults.js";
-import { $, $$, esc, initials, colorFor, toast, safeUrl } from "./util.js";
+import { db, configured, workshopId, collection, doc, addDoc, getDoc, getDocs, query, where, orderBy, serverTimestamp } from "./firebase.js?v=20261016a";
+import { DEFAULT_WORKSHOP, DEFAULT_PROGRAMS, DEFAULT_TESTIMONIALS, INCLUDED, ROLES, QUALIFICATIONS } from "./defaults.js?v=20261016a";
+import { $, $$, esc, initials, colorFor, toast, safeUrl } from "./util.js?v=20261016a";
 
 let workshop = DEFAULT_WORKSHOP, programs = DEFAULT_PROGRAMS, stories = [];
 let rating = 0;
