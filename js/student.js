@@ -1,6 +1,6 @@
-import { db, configured, workshopId, collection, doc, addDoc, getDoc, getDocs, query, where, orderBy, serverTimestamp } from "./firebase.js?v=20261016a";
-import { DEFAULT_WORKSHOP, DEFAULT_PROGRAMS, DEFAULT_TESTIMONIALS, INCLUDED, ROLES, QUALIFICATIONS } from "./defaults.js?v=20261016a";
-import { $, $$, esc, initials, colorFor, toast, safeUrl } from "./util.js?v=20261016a";
+import { db, configured, workshopId, collection, doc, addDoc, getDoc, getDocs, query, where, orderBy, serverTimestamp } from "./firebase.js?v=20261016b";
+import { DEFAULT_WORKSHOP, DEFAULT_PROGRAMS, DEFAULT_TESTIMONIALS, INCLUDED, ROLES, QUALIFICATIONS } from "./defaults.js?v=20261016b";
+import { $, $$, esc, initials, colorFor, toast, safeUrl } from "./util.js?v=20261016b";
 
 let workshop = DEFAULT_WORKSHOP, programs = DEFAULT_PROGRAMS, stories = [];
 let rating = 0;
@@ -185,7 +185,6 @@ function renderTab(t) {
         ${video ? `<a href="${esc(video)}" target="_blank" rel="noopener" style="font-size:13px;font-weight:600">▶ Watch video testimonial</a>` : ""}
       </article>`;
     }).join("")}
-      <a class="btn ghost" href="assets/success-stories.pdf" target="_blank" rel="noopener">View all success stories (PDF)</a>
     </div>`;
     return;
   }

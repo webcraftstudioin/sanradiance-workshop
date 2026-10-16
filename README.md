@@ -111,7 +111,7 @@ This decides who can see student phone numbers.
 | Change the WhatsApp community link | Workshop & programs → **WhatsApp community link** → **Save** (leave empty to hide the button) |
 | Change the course catalogue | Workshop & programs → **Course catalogue link** (paste a Google Drive link to your PDF) → **Save** |
 
-**Built-in stories:** the 7 alumni stories from your success-stories PDF show automatically. To edit, reorder or hide them, open Testimonials and click **Load these stories** once.
+**Built-in stories:** the 6 built-in alumni stories show automatically. To edit, reorder or hide them, open Testimonials and click **Load these stories** once.
 
 **Success stories rule:** a story is only shown to students after you tick *"student gave written permission"*. If it shows a salary package, you must also tick *"I checked the offer letter"*. Until at least one story is visible, students simply don't see the Success stories tab.
 

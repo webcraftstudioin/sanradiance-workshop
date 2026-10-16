@@ -2,9 +2,9 @@ import {
   db, auth, configured, workshopId,
   collection, doc, addDoc, setDoc, getDoc, getDocs, updateDoc, deleteDoc, query, where, orderBy, onSnapshot, writeBatch, serverTimestamp,
   signInWithEmailAndPassword, signOut, onAuthStateChanged, sendPasswordResetEmail
-} from "./firebase.js?v=20261016a";
-import { DEFAULT_WORKSHOP, DEFAULT_PROGRAMS, DEFAULT_TESTIMONIALS, STATUSES } from "./defaults.js?v=20261016a";
-import { $, $$, esc, stars, toast, fmtTime, safeUrl } from "./util.js?v=20261016a";
+} from "./firebase.js?v=20261016b";
+import { DEFAULT_WORKSHOP, DEFAULT_PROGRAMS, DEFAULT_TESTIMONIALS, STATUSES } from "./defaults.js?v=20261016b";
+import { $, $$, esc, stars, toast, fmtTime, safeUrl } from "./util.js?v=20261016b";
 
 let subs = [], testimonials = [], programs = [], workshop = { ...DEFAULT_WORKSHOP };
 let tab = "subs", filt = { q: "", int: "all", status: "all", scope: "this" };

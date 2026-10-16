@@ -48,8 +48,7 @@ export const DEFAULT_TESTIMONIALS = [
   { order: 3, name: "Yuvaraj S H", role: "Senior Software Development Engineer", company: "Western Digital", college: "", location: "Bengaluru, Karnataka", skills: [], photo: "assets/stories/yuvaraj-sh.jpg" },
   { order: 4, name: "Raghavendra D G", role: "Platform Test Engineer", company: "Western Digital", college: "Jawaharlal Nehru National College of Engineering", location: "Bengaluru, Karnataka", skills: ["Product Testing", "Data Storage Solutions"], photo: "assets/stories/raghavendra-dg.jpg" },
   { order: 5, name: "Rohit Mishra", role: "QA Lead", company: "Siemens Gamesa", college: "Visvesvaraya Technological University", location: "Noida, Uttar Pradesh", skills: [], photo: "assets/stories/rohit-mishra.jpg" },
-  { order: 6, name: "Jyothi T S", role: "Developer", company: "Sapiens", college: "", location: "Bengaluru, Karnataka", skills: [], photo: "assets/stories/jyothi-ts.jpg" },
-  { order: 7, name: "Ramya Bharadwaj", role: "", company: "", college: "Jawaharlal Nehru National College of Engineering", location: "", skills: [], photo: "assets/stories/ramya-bharadwaj.jpg" }
+  { order: 6, name: "Jyothi T S", role: "Developer", company: "Sapiens", college: "", location: "Bengaluru, Karnataka", skills: [], photo: "assets/stories/jyothi-ts.jpg" }
 ].map((t) => ({ course: "", story: "", pkg: "", video: "", consent: true, verified: true, show: true, ...t }));
 
 export const INCLUDED = [
