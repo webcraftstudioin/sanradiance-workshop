@@ -39,6 +39,19 @@ export const DEFAULT_PROGRAMS = [
     outcomes: "Real project experience with a mentor and a VTU-registered internship certificate." }
 ];
 
+// Alumni success stories from "SanRadiance_JNNCE_Success_Since_2010.pdf".
+// Shown to students until you click "Load these stories" in Admin → Testimonials;
+// after that, the stories in the admin dashboard are used instead.
+export const DEFAULT_TESTIMONIALS = [
+  { order: 1, name: "Deekshith Bennur", role: "Senior Software Engineer", company: "Walmart Global Tech", college: "Visvesvaraya Technological University", location: "Bengaluru, Karnataka", skills: ["Java", "Kubernetes", "Microservices", "Cloud-Native"], photo: "assets/stories/deekshith-bennur.jpg" },
+  { order: 2, name: "Umesh Nadig", role: "Senior Software Engineer", company: "Hewlett-Packard (HPE)", college: "Manipal University", location: "Bengaluru, Karnataka", skills: [], photo: "assets/stories/umesh-nadig.jpg" },
+  { order: 3, name: "Yuvaraj S H", role: "Senior Software Development Engineer", company: "Western Digital", college: "", location: "Bengaluru, Karnataka", skills: [], photo: "assets/stories/yuvaraj-sh.jpg" },
+  { order: 4, name: "Raghavendra D G", role: "Platform Test Engineer", company: "Western Digital", college: "Jawaharlal Nehru National College of Engineering", location: "Bengaluru, Karnataka", skills: ["Product Testing", "Data Storage Solutions"], photo: "assets/stories/raghavendra-dg.jpg" },
+  { order: 5, name: "Rohit Mishra", role: "QA Lead", company: "Siemens Gamesa", college: "Visvesvaraya Technological University", location: "Noida, Uttar Pradesh", skills: [], photo: "assets/stories/rohit-mishra.jpg" },
+  { order: 6, name: "Jyothi T S", role: "Developer", company: "Sapiens", college: "", location: "Bengaluru, Karnataka", skills: [], photo: "assets/stories/jyothi-ts.jpg" },
+  { order: 7, name: "Ramya Bharadwaj", role: "", company: "", college: "Jawaharlal Nehru National College of Engineering", location: "", skills: [], photo: "assets/stories/ramya-bharadwaj.jpg" }
+].map((t) => ({ course: "", story: "", pkg: "", video: "", consent: true, verified: true, show: true, ...t }));
+
 export const INCLUDED = [
   "Basics → project work → soft skills → technology",
   "Hands-on projects for your portfolio",

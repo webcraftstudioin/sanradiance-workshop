@@ -3,7 +3,7 @@ import {
   collection, doc, addDoc, setDoc, getDoc, getDocs, updateDoc, deleteDoc, query, where, orderBy, onSnapshot, writeBatch, serverTimestamp,
   signInWithEmailAndPassword, signOut, onAuthStateChanged, sendPasswordResetEmail
 } from "./firebase.js";
-import { DEFAULT_WORKSHOP, DEFAULT_PROGRAMS, STATUSES } from "./defaults.js";
+import { DEFAULT_WORKSHOP, DEFAULT_PROGRAMS, DEFAULT_TESTIMONIALS, STATUSES } from "./defaults.js";
 import { $, $$, esc, stars, toast, fmtTime, safeUrl } from "./util.js";
 
 let subs = [], testimonials = [], programs = [], workshop = { ...DEFAULT_WORKSHOP };
@@ -186,18 +186,21 @@ function renderFeedback(P) {
 }
 
 /* ---------- Testimonials ---------- */
-const T_EMPTY = { name: "", course: "", skills: [], company: "", role: "", pkg: "", story: "", photo: "", video: "", verified: false, consent: false, show: false, order: 99 };
+const T_EMPTY = { name: "", course: "", college: "", location: "", skills: [], company: "", role: "", pkg: "", story: "", photo: "", video: "", verified: false, consent: false, show: false, order: 99 };
 
 function renderTestimonials(P) {
   const t = editingT;
   P.innerHTML = `
     <div class="toolbar"><strong style="flex:1;color:var(--ink)">Student success stories</strong>${t ? "" : '<button class="btn sm" id="addT">Add testimonial</button>'}</div>
+    ${!testimonials.length && workshop.storiesSource !== "db" && !t ? `<div class="notice" style="margin-bottom:12px;display:flex;gap:12px;align-items:center;flex-wrap:wrap"><span style="flex:1 1 280px">Students currently see the ${DEFAULT_TESTIMONIALS.length} built-in alumni stories (from your success stories PDF). Load them here to edit, reorder or hide them.</span><button class="btn sm" id="seedT">Load these stories</button></div>` : ""}
     ${t ? `<form class="editor" id="tForm" novalidate>
       <strong style="color:var(--ink)">${t.id ? "Edit" : "New"} testimonial</strong>
       <div class="editgrid">
         <label class="f">Student name<input type="text" id="tName" value="${esc(t.name)}" maxlength="80"></label>
         <label class="f">Course / program<input type="text" id="tCourse" value="${esc(t.course)}" maxlength="100"></label>
         <label class="f">Company<input type="text" id="tCompany" value="${esc(t.company)}" maxlength="100"></label>
+        <label class="f">College / university<input type="text" id="tCollege" value="${esc(t.college || "")}" maxlength="120"></label>
+        <label class="f">Location <small>e.g. Bengaluru, Karnataka</small><input type="text" id="tLocation" value="${esc(t.location || "")}" maxlength="80"></label>
         <label class="f">Job role<input type="text" id="tRole" value="${esc(t.role)}" maxlength="100"></label>
         <label class="f">Package <small>e.g. ₹9.5 LPA (only if verified)</small><input type="text" id="tPkg" value="${esc(t.pkg)}" maxlength="30"></label>
         <label class="f">Skills <small>comma separated</small><input type="text" id="tSkills" value="${esc((t.skills || []).join(", "))}" maxlength="200"></label>
@@ -213,11 +216,24 @@ function renderTestimonials(P) {
       <div class="acts"><button class="btn sm" type="submit">Save</button><button class="btn ghost sm" type="button" id="tCancel">Cancel</button></div>
     </form>` : ""}
     <div class="list" style="margin-top:12px">${testimonials.map((x) => `<div class="row"><div><strong>${esc(x.name)}</strong> — ${esc(x.role)}${x.company ? ", " + esc(x.company) : ""}
-      <small>${esc(x.course)}${x.pkg ? " · " + esc(x.pkg) : ""} · ${x.verified ? "Offer letter verified" : "Not verified"} · ${x.consent ? "Consent given" : "No consent yet"} · ${x.show ? "<b style='color:var(--green)'>Visible to students</b>" : "Hidden"}</small></div>
+      <small>${esc([x.course, x.college].filter(Boolean).join(" · "))}${x.pkg ? " · " + esc(x.pkg) : ""} · ${x.verified ? "Offer letter verified" : "Not verified"} · ${x.consent ? "Consent given" : "No consent yet"} · ${x.show ? "<b style='color:var(--green)'>Visible to students</b>" : "Hidden"}</small></div>
       <div class="acts"><button class="btn ghost sm" data-te="${x.id}">Edit</button>${confirmDel === x.id
         ? `<span class="confirm">Delete? <button class="btn danger sm" data-tdy="${x.id}">Yes</button><button class="btn ghost sm" data-tdn>No</button></span>`
         : `<button class="btn ghost sm" data-td="${x.id}">Delete</button>`}</div></div>`).join("") || (t ? "" : '<p class="empty">No testimonials yet. Add real student stories. The Success stories tab stays hidden for students until at least one story is visible.</p>')}</div>`;
   if (!t) $("#addT").onclick = () => { editingT = { ...T_EMPTY }; renderTestimonials(P); };
+  const seedT = $("#seedT");
+  if (seedT) seedT.onclick = async () => {
+    seedT.disabled = true;
+    try {
+      const b = writeBatch(db);
+      DEFAULT_TESTIMONIALS.forEach((x) => b.set(doc(collection(db, "testimonials")), { ...x }));
+      const { _saved, ...w } = { ...workshop, storiesSource: "db" };
+      b.set(doc(db, "settings", "workshop"), w);
+      await b.commit();
+      workshop.storiesSource = "db"; workshop._saved = true;
+      toast("Stories loaded. Edit, reorder or hide them below.");
+    } catch { toast("Couldn't load the stories. Try again."); seedT.disabled = false; }
+  };
   $$("[data-te]", P).forEach((b) => (b.onclick = () => { editingT = { ...testimonials.find((x) => x.id === b.dataset.te) }; renderTestimonials(P); }));
   $$("[data-td]", P).forEach((b) => (b.onclick = () => { confirmDel = b.dataset.td; renderTestimonials(P); }));
   $$("[data-tdn]", P).forEach((b) => (b.onclick = () => { confirmDel = null; renderTestimonials(P); }));
@@ -227,14 +243,14 @@ function renderTestimonials(P) {
     $("#tForm").onsubmit = async (e) => {
       e.preventDefault();
       const data = {
-        name: $("#tName").value.trim(), course: $("#tCourse").value.trim(), company: $("#tCompany").value.trim(), role: $("#tRole").value.trim(),
+        name: $("#tName").value.trim(), course: $("#tCourse").value.trim(), company: $("#tCompany").value.trim(), college: $("#tCollege").value.trim(), location: $("#tLocation").value.trim(), role: $("#tRole").value.trim(),
         pkg: $("#tPkg").value.trim(), skills: $("#tSkills").value.split(",").map((s) => s.trim()).filter(Boolean).slice(0, 8),
         photo: safeUrl($("#tPhoto").value.trim()), video: safeUrl($("#tVideo").value.trim()), story: $("#tStory").value.trim(),
         order: Math.max(1, Math.min(999, parseInt($("#tOrder").value, 10) || 99)),
         consent: $("#tConsent").checked, verified: $("#tVerified").checked, show: $("#tShow").checked
       };
       let m = "";
-      if (!data.name || !data.role) m = "Name and job role are required.";
+      if (!data.name) m = "Student name is required.";
       else if (data.show && !data.consent) m = "You can only show a story after the student gives permission.";
       else if (data.show && data.pkg && !data.verified) m = "A story with a package can only be shown after you verify the offer letter.";
       $("#tErr").textContent = m; if (m) return;

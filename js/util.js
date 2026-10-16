@@ -21,7 +21,8 @@ export function fmtTime(ts) {
   return d.toLocaleString("en-IN", { day: "numeric", month: "short", hour: "numeric", minute: "2-digit" });
 }
 
-// Only allow http(s) links for user-entered URLs (photos, videos).
+// Only allow http(s) links (or files on this site, like assets/stories/x.jpg) for photos, videos and links.
 export function safeUrl(u) {
-  try { const x = new URL(u); return x.protocol === "https:" || x.protocol === "http:" ? x.href : ""; } catch { return ""; }
+  if (!u) return "";
+  try { const x = new URL(u, location.href); return x.protocol === "https:" || x.protocol === "http:" ? x.href : ""; } catch { return ""; }
 }

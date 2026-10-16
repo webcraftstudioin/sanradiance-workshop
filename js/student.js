@@ -1,5 +1,5 @@
 import { db, configured, workshopId, collection, doc, addDoc, getDoc, getDocs, query, where, orderBy, serverTimestamp } from "./firebase.js";
-import { DEFAULT_WORKSHOP, DEFAULT_PROGRAMS, INCLUDED, ROLES, QUALIFICATIONS } from "./defaults.js";
+import { DEFAULT_WORKSHOP, DEFAULT_PROGRAMS, DEFAULT_TESTIMONIALS, INCLUDED, ROLES, QUALIFICATIONS } from "./defaults.js";
 import { $, $$, esc, initials, colorFor, toast, safeUrl } from "./util.js";
 
 let workshop = DEFAULT_WORKSHOP, programs = DEFAULT_PROGRAMS, stories = [];
@@ -34,6 +34,8 @@ async function loadContent() {
     const t = await getDocs(query(collection(db, "testimonials"), where("show", "==", true)));
     stories = t.docs.map((d) => d.data()).sort((a, b) => (a.order ?? 99) - (b.order ?? 99));
   } catch (e) { console.warn("testimonials", e); }
+  // Until stories are managed in the admin dashboard, show the built-in alumni stories.
+  if (!stories.length && workshop.storiesSource !== "db") stories = DEFAULT_TESTIMONIALS;
 }
 
 function renderHeader() {
@@ -168,17 +170,23 @@ function renderThanks(first) {
 function renderTab(t) {
   const el = $("#ptab");
   if (t === "stories") {
-    el.innerHTML = `<div style="display:grid;gap:12px">${stories.map((x) => {
+    el.innerHTML = `<div style="display:grid;gap:12px">
+      <p class="muted" style="margin:0;font-size:13px">Alumni who built their careers with JayathiSoft and SanRadiance.</p>
+      ${stories.map((x) => {
       const photo = safeUrl(x.photo), video = safeUrl(x.video);
+      const sub = [x.course, x.college].filter(Boolean).join(" · ");
+      const job = [x.role, x.company].filter(Boolean).map(esc).join(" · ");
       return `<article class="card tcard">
-        <div class="who">${photo ? `<img class="avatar" src="${esc(photo)}" alt="">` : `<div class="avatar" style="background:${colorFor(x.name)}">${esc(initials(x.name))}</div>`}
-          <div><strong>${esc(x.name)}</strong><small>${esc(x.course)}</small></div></div>
+        <div class="who">${photo ? `<img class="avatar" src="${esc(photo)}" alt="Photo of ${esc(x.name)}" loading="lazy">` : `<div class="avatar" style="background:${colorFor(x.name)}">${esc(initials(x.name))}</div>`}
+          <div><strong>${esc(x.name)}</strong>${sub ? `<small>${esc(sub)}</small>` : ""}${x.location ? `<small>📍 ${esc(x.location)}</small>` : ""}</div></div>
         ${x.story ? `<p style="margin:0;font-size:14px">“${esc(x.story)}”</p>` : ""}
         ${(x.skills || []).length ? `<div class="chips">${x.skills.map((s) => `<span class="chip">${esc(s)}</span>`).join("")}</div>` : ""}
-        <div class="placed"><span>${esc(x.role)}${x.company ? " · " + esc(x.company) : ""}</span>${x.pkg ? `<span>${esc(x.pkg)}</span>` : ""}</div>
+        ${job || x.pkg ? `<div class="placed"><span>${job}</span>${x.pkg ? `<span>${esc(x.pkg)}</span>` : ""}</div>` : ""}
         ${video ? `<a href="${esc(video)}" target="_blank" rel="noopener" style="font-size:13px;font-weight:600">▶ Watch video testimonial</a>` : ""}
       </article>`;
-    }).join("")}</div>`;
+    }).join("")}
+      <a class="btn ghost" href="assets/success-stories.pdf" target="_blank" rel="noopener">View all success stories (PDF)</a>
+    </div>`;
     return;
   }
   const w = workshop;
