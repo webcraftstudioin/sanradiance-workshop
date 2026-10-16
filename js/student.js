@@ -1,6 +1,6 @@
-import { db, configured, workshopId, collection, doc, addDoc, getDoc, getDocs, query, where, orderBy, serverTimestamp } from "./firebase.js?v=20261016c";
-import { DEFAULT_WORKSHOP, DEFAULT_PROGRAMS, DEFAULT_TESTIMONIALS, INCLUDED, ROLES, QUALIFICATIONS, upgradeContacts } from "./defaults.js?v=20261016c";
-import { $, $$, esc, initials, colorFor, toast, safeUrl } from "./util.js?v=20261016c";
+import { db, configured, workshopId, collection, doc, addDoc, getDoc, getDocs, query, where, orderBy, serverTimestamp } from "./firebase.js?v=20261016d";
+import { DEFAULT_WORKSHOP, DEFAULT_PROGRAMS, DEFAULT_TESTIMONIALS, INCLUDED, ROLES, QUALIFICATIONS, upgradeContacts } from "./defaults.js?v=20261016d";
+import { $, $$, esc, initials, colorFor, toast, safeUrl } from "./util.js?v=20261016d";
 
 let workshop = DEFAULT_WORKSHOP, programs = DEFAULT_PROGRAMS, stories = [];
 let rating = 0;
@@ -10,7 +10,7 @@ const catalogCard = () => {
   const link = safeUrl(workshop.catalogUrl || "");
   const btn = link
     ? `<a class="btn sm" href="${esc(link)}" target="_blank" rel="noopener">Download catalogue</a>`
-    : `<a class="btn sm" href="assets/course-catalogue.pdf" download="SanRadiance-JayathiSoft-Course-Catalogue.pdf">Download catalogue</a>`;
+    : `<a class="btn sm" href="assets/course-catalogue.pdf?v=20261016d" download="JayathiSoft-Course-Catalogue.pdf">Download catalogue</a>`;
   return CATALOG_CARD.replace("{{BTN}}", btn);
 };
 const CATALOG_CARD = `
